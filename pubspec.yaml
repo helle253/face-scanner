@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   arkit_plugin:
     path: ../arkit_flutter_plugin
+  share_plus: ^4.5.3
 
 dev_dependencies:
   flutter_test:
