@@ -4,9 +4,9 @@ packages:
   arkit_plugin:
     dependency: "direct main"
     description:
-      name: arkit_plugin
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../arkit_flutter_plugin"
+      relative: true
+    source: path
     version: "1.0.5"
   async:
     dependency: transitive
