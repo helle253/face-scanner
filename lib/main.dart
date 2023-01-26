@@ -25,6 +25,10 @@ class _FaceDetectionPageState extends State<FaceDetectionPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(title: const Text('Face Detection Sample')),
+        bottomSheet: ElevatedButton(
+          onPressed: () => {print('hehehe')},
+          child: const Text("Share"),
+        ),
         body: ARKitSceneView(
           configuration: ARKitConfiguration.faceTracking,
           onARKitViewCreated: onARKitViewCreated,
