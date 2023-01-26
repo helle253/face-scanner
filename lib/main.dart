@@ -2,8 +2,10 @@ import 'package:arkit_plugin/arkit_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
+import 'encoders/to_obj.dart';
+
 void main() {
-  runApp(const FaceDetectionPage());
+  runApp(const MaterialApp(home: FaceDetectionPage()));
 }
 
 class FaceDetectionPage extends StatefulWidget {
@@ -16,7 +18,7 @@ class FaceDetectionPage extends StatefulWidget {
 class _FaceDetectionPageState extends State<FaceDetectionPage> {
   late ARKitController arkitController;
   ARKitNode? node;
-
+  ARKitFace? face;
   ARKitNode? leftEye;
   ARKitNode? rightEye;
 
@@ -29,10 +31,19 @@ class _FaceDetectionPageState extends State<FaceDetectionPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(title: const Text('Face Detection Sample')),
-        bottomSheet: ElevatedButton(
-          onPressed: () => {print('hehehe')},
-          child: const Text("Share"),
-        ),
+        persistentFooterButtons: [
+          Center(
+            child: TextButton(
+              onPressed: () {
+                print(toObj(
+                  vertices: face!.vertices!,
+                  triangleIndices: face!.triangleIndices!,
+                ));
+              },
+              child: const Text("Share"),
+            ),
+          ),
+        ],
         body: ARKitSceneView(
           configuration: ARKitConfiguration.faceTracking,
           onARKitViewCreated: onARKitViewCreated,
@@ -79,6 +90,7 @@ class _FaceDetectionPageState extends State<FaceDetectionPage> {
   void _handleUpdateAnchor(ARKitAnchor anchor) {
     if (anchor is ARKitFaceAnchor && mounted) {
       final faceAnchor = anchor;
+      face = anchor.geometry;
       arkitController.updateFaceGeometry(node!, anchor.identifier);
       _updateEye(leftEye!, faceAnchor.leftEyeTransform,
           faceAnchor.blendShapes['eyeBlink_L'] ?? 0);
