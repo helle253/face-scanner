@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:arkit_plugin/arkit_plugin.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
+import 'package:cross_file/cross_file.dart';
 
-import 'encoders/to_obj.dart';
+import 'encoders/encode_to_obj.dart';
 
 void main() {
   runApp(const MaterialApp(home: FaceDetectionPage()));
@@ -34,12 +39,7 @@ class _FaceDetectionPageState extends State<FaceDetectionPage> {
         persistentFooterButtons: [
           Center(
             child: TextButton(
-              onPressed: () {
-                print(toObj(
-                  vertices: face!.vertices!,
-                  triangleIndices: face!.triangleIndices!,
-                ));
-              },
+              onPressed: onShareButtonPressed,
               child: const Text("Share"),
             ),
           ),
@@ -49,6 +49,19 @@ class _FaceDetectionPageState extends State<FaceDetectionPage> {
           onARKitViewCreated: onARKitViewCreated,
         ),
       );
+
+  void onShareButtonPressed() async {
+    final filePath = '${(await getTemporaryDirectory()).path}/face.obj';
+    final f = File(filePath);
+    await f.writeAsString(
+        encodeToObj(
+          vertices: face!.vertices!,
+          triangleIndices: face!.triangleIndices!,
+        ),
+        flush: true);
+    final xFile = XFile(filePath, mimeType: 'model/obj', name: 'face.obj');
+    await Share.shareXFiles([xFile]);
+  }
 
   void onARKitViewCreated(ARKitController arkitController) {
     this.arkitController = arkitController;
