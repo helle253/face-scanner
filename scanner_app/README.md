@@ -1,3 +1,3 @@
 # face_scanner
 
-Scans a face using iOS's ARKit and lets you share the rendering via a native share sheet.
+Scans a face using iOS's ARKit and lets you share the rendering via a native share sheet in .obj format.
