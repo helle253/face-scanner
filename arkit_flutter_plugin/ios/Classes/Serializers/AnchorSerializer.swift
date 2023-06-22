@@ -1,6 +1,15 @@
 import Foundation
 import ARKit
 
+extension Array {
+    func chunk(_ chunkSize: Int) -> [[Element]] {
+        return stride(from: 0, to: self.count, by: chunkSize).map({ (startIndex) -> [Element] in
+            let endIndex = (startIndex.advanced(by: chunkSize) > self.count) ? self.count-startIndex : chunkSize
+            return Array(self[startIndex..<startIndex.advanced(by: endIndex)])
+        })
+    }
+}
+
 func serializeAnchor(_ anchor: ARAnchor) -> Dictionary<String, Any> {
     var params = [
         "identifier": anchor.identifier.uuidString,
@@ -64,6 +73,10 @@ fileprivate func serializeFaceAnchor(_ anchor: ARFaceAnchor, _ params:[String : 
     params["leftEyeTransform"] = serializeMatrix(anchor.leftEyeTransform)
     params["rightEyeTransform"] = serializeMatrix(anchor.rightEyeTransform)
     params["blendShapes"] = anchor.blendShapes
+    var geometry = [String:Any]();
+    geometry["vertices"] = anchor.geometry.vertices.map { [$0.x, $0.y, $0.z] }
+    geometry["triangleIndices"] = anchor.geometry.triangleIndices.chunk(3)
+    params["geometry"] = geometry
     return params
 }
 #endif

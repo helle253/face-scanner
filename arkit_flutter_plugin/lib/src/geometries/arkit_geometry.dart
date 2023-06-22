@@ -14,13 +14,19 @@ import 'package:arkit_plugin/src/geometries/material/arkit_material.dart';
 import 'package:arkit_plugin/src/utils/json_converters.dart';
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:vector_math/vector_math_64.dart' as vector;
 
 part 'arkit_geometry.g.dart';
 
 /// ARKitGeometry is an abstract class that represents the geometry that can be attached to a SCNNode.
 abstract class ARKitGeometry {
-  ARKitGeometry({List<ARKitMaterial>? materials})
-      : materials = ValueNotifier(materials);
+  ARKitGeometry({
+    List<ARKitMaterial>? materials,
+    List<vector.Vector3>? vertices,
+    List<List<int>>? triangleIndices,
+  })  : materials = ValueNotifier(materials),
+        vertices = vertices,
+        triangleIndices = triangleIndices;
 
   factory ARKitGeometry.fromJson(Map<String, dynamic> arguments) {
     final type = arguments['geometryType'].toString();
@@ -58,6 +64,11 @@ abstract class ARKitGeometry {
   /// The index of the material used for a geometry element is equal to the index of that element modulo the number of materials.
   @ListMaterialsValueNotifierConverter()
   final ValueNotifier<List<ARKitMaterial>?> materials;
+
+  @Vector3Converter()
+  final List<vector.Vector3>? vertices;
+  @Vector3Converter()
+  final List<List<int>>? triangleIndices;
 
   Map<String, dynamic> toJson();
 }
